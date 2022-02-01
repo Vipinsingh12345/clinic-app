@@ -61,9 +61,9 @@ body{
     }
     
     #hero h2 {
-      color: rgb(253, 8, 8);
+      color: rgb(10, 2, 2);
       margin-bottom: 40px;
-      font-size: 15px;
+      font-size: 25px;
       font-weight: 500;
       font-family: "Open Sans", sans-serif;
       letter-spacing: 0.5px;
@@ -75,14 +75,14 @@ body{
       text-transform: uppercase;
       font-weight: 500;
       font-size: 14px;
-      letter-spacing: 1px;
+      letter-spacing: 1px;  
       display: inline-block;
       padding: 8px 28px;
       border-radius: 50px;
       transition: 0.5s;
       margin: 10px;
       border: 2px solid #fff;
-      color: #fff;
+      color: rgb(59, 2, 2);
     }
     
      .main-btn:hover {

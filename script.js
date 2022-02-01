@@ -2,6 +2,7 @@ let DB;
 
 let form = document.querySelector('form');
 let patientName = document.querySelector('#patient-name');
+let doctorName = document.querySelector('#doctor-name');
 let contact = document.querySelector('#contact');
 let date = document.querySelector('#date');
 let time = document.querySelector('#time');
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         
           objectStore.createIndex('patientname', 'patientname', { unique: false } );
+          objectStore.createIndex('doctorName', 'doctorName', { unique: false } );
           objectStore.createIndex('contact', 'contact', { unique: false } );
           objectStore.createIndex('date', 'date', { unique: false } );
           objectStore.createIndex('time', 'time', { unique: false } );
@@ -50,29 +52,40 @@ document.addEventListener('DOMContentLoaded', () => {
           e.preventDefault();
           let newConsultation = {
                patientname : patientName.value,
-               
-             contact : contact.value,
+               doctorName : doctorName.value,
+               contact : contact.value,
                date : date.value,
-            time : time.value,
+               time : time.value,
                symptoms : symptoms.value
           }
           
           let transaction = DB.transaction(['consultations'], 'readwrite');
           let objectStore = transaction.objectStore('consultations');
-
-          let request = objectStore.add(newConsultation);
+          var countRequest = objectStore.count();
+          countRequest.onsuccess = function() {
+               console.log(countRequest.result);
+               if(countRequest.result > 19) {
+                    showErrorMessage();
+               } else {          
+                    let request = objectStore.add(newConsultation);
+                    
                     request.onsuccess = () => {
-               form.reset();
+                         form.reset();
+                    }
+                    transaction.oncomplete = () => {
+                         //console.log('New schedule added');
+          
+                         showConsultations();
+                    }
+                    transaction.onerror = () => {
+                        //console.log();
+                    }
+               }
           }
-          transaction.oncomplete = () => {
-               //console.log('New schedule added');
 
-               showConsultations();
-          }
-          transaction.onerror = () => {
-              //console.log();
-          }
-
+     }
+     function showErrorMessage() {
+          alert("Appointment not available.")
      }
      function showConsultations() {
        
@@ -93,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  
                     ConsultationHTML.innerHTML = `  
                          <p class="font-weight-bold">Patient Name:  <span class="font-weight-normal">${cursor.value.patientname}<span></p>
-                          <p class="font-weight-bold">Contact:  <span class="font-weight-normal">${cursor.value.contact}<span></p>
+                         <p class="font-weight-bold">Doctor's Name:  <span class="font-weight-normal">${cursor.value.doctorName}<span></p>
+                         <p class="font-weight-bold">Contact:  <span class="font-weight-normal">${cursor.value.contact}<span></p>
                          <p class="font-weight-bold">Date:  <span class="font-weight-normal">${cursor.value.date}<span></p>
                          <p class="font-weight-bold">Time:  <span class="font-weight-normal">${cursor.value.time}<span></p>
                          <p class="font-weight-bold">Symptoms:  <span class="font-weight-normal">${cursor.value.symptoms}<span></p>
